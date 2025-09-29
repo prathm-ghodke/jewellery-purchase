@@ -1,0 +1,19 @@
+<div class="container-fluid">
+  <div class="row">
+    <div>
+      <mat-tab-group mat-stretch-tabs="true" mat-align-tabs="center" [selectedIndex]="0">
+        @for (tab of tabs; track tab) {
+            <mat-tab [label]="tab">
+                @if (tab === 'GOLD') {
+                  <app-customer-detail (moveToNextForm)="onStepChange($any($event))"></app-customer-detail>
+                  <!-- <app-gold-detail [currentStep]="currentStep"></app-gold-detail> -->
+                  <app-gold-detail></app-gold-detail>
+                } @else if (tab === 'SILVER') {
+                  <app-customer-detail></app-customer-detail>
+                }
+            </mat-tab>
+        }
+      </mat-tab-group>
+    </div>
+  </div>
+</div>
