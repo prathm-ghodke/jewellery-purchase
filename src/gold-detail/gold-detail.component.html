@@ -8,31 +8,58 @@
                 <form [formGroup]="goldPurchaseForm" (ngSubmit)="save()">
                     <div class="row">
                         <div class="col-sm-6 col-md-3 my-2">
-                            <input type="text" class="form-control" id="goldRate" formControlName="goldRate" placeholder="Today's Gold Rate"/>
+                            <input type="number" class="form-control" id="goldRate" formControlName="goldRate" placeholder="Today's Gold Rate" (change)="calculatePrice()"/>
+                            @if (goldPurchaseForm.get('goldRate')?.invalid && (goldPurchaseForm.get('goldRate')?.touched || goldPurchaseForm.get('goldRate')?.dirty)) {
+                                @if (goldPurchaseForm.get('goldRate')?.errors?.['required']) {
+                                    <small class="validationError">*Please enter gold rate</small>
+                                }
+                            }
                         </div>
                     </div>
+                    <mat-divider></mat-divider>
                     <div formArrayName="items">
                         @for (item of items.controls; track $index) {
                             <div formGroupName="{{$index}}" >
                                 <div class="form-group row">
                                     <div class="col-sm-6 col-md-3 my-2">
-                                        <input type="text" class="form-control" id="itemPurchase" formControlName="itemPurchase" placeholder="Item Purchase"/>
+                                        <input type="text" class="form-control" id="itemPurchase" formControlName="itemPurchase" placeholder="Item {{$index+1}}"/>
+                                        @if (item.get('itemPurchase')?.invalid && (item.get('itemPurchase')?.touched || item.get('itemPurchase')?.dirty)) {
+                                            @if (item.get('itemPurchase')?.errors?.['required']) {
+                                                <small class="validationError">*Please enter purchased item </small>
+                                            }
+                                            @else if (item.get('itemPurchase')?.errors?.['pattern']) {
+                                                <small class="validationError">*Special characters are not allowed</small>
+                                            }
+                                        }
                                     </div>
                                     <div class="col-sm-6 col-md-3 my-2">
                                         <input type="text" class="form-control" id="HUID_number" formControlName="HUID" placeholder="HUID Number"/>
+                                        @if (item.get('HUID')?.invalid && (item.get('HUID')?.touched || item.get('HUID')?.dirty)) {
+                                            @if (item.get('HUID')?.errors?.['required']) {
+                                                <small class="validationError">*Please enter HallMark ID</small>
+                                            }
+                                            @else if (item.get('HUID')?.errors?.['pattern']) {
+                                                <small class="validationError">*Special characters are not allowed</small>
+                                            }
+                                        }
                                     </div>
                                     <div class="col-sm-6 col-md-3 my-2">
-                                        <input type="text" class="form-control" id="weight" formControlName="weight" placeholder="Item weight" (change)="calculatePrice()"/>
+                                        <input type="number" class="form-control" id="weight" formControlName="weight" placeholder="Item weight" (change)="calculatePrice()"/>
+                                        @if (item.get('weight')?.invalid && (item.get('weight')?.touched || item.get('weight')?.dirty)) {
+                                            @if (item.get('weight')?.errors?.['required']) {
+                                                <small class="validationError">*Please enter gold weight</small>
+                                            }
+                                        }
                                     </div>
                                     <div class="col-sm-6 col-md-3 my-2">
-                                        <h4>{{items.value.price}}</h4>
+                                        <input type="text" class="form-control" id="weight" formControlName="price" placeholder="{{item.get('price')?.value}}"/>
                                     </div>
                                 </div>
                             </div>
                         }
                         <div class="d-flex justify-content-end">
                             <button type="button" class="btn btn-primary mt-3 px-3 me-2" (click)="addNewItem()">Add more items</button>
-                            <button type="button" class="btn btn-danger mt-3 px-3" (click)="removeItems()">Remove items</button>
+                            <button type="button" class="btn btn-danger mt-3 px-3" (click)="removeItems()" [disabled]="!removeBtn">Remove items</button>
                         </div>
                     </div>
                         <div class="row">
@@ -49,12 +76,12 @@
                                     <input type="number" class="form-control" id="discount" formControlName="Discount" placeholder="Discount"/>
                                 </div>
                                 <div>
-                                    <label for="finalPrice">Total Price: </label>
+                                    <label for="finalPrice">Total Price: {{totalPrice}}</label>
                                 </div>
                             </div>
                         </div>
                         <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary mt-3 px-5">Next</button>
+                            <button type="submit" class="btn btn-primary mt-3 px-3" [disabled]="!goldPurchaseForm.valid">Generate Receipt</button>
                         </div>
                 </form>
             </div>

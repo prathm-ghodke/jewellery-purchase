@@ -5,9 +5,10 @@
         @for (tab of tabs; track tab) {
             <mat-tab [label]="tab">
                 @if (tab === 'GOLD') {
-                  <app-customer-detail (moveToNextForm)="onStepChange($any($event))"></app-customer-detail>
+                  <!-- <app-customer-detail (moveToNextForm)="onStepChange($any($event))"></app-customer-detail> -->
                   <!-- <app-gold-detail [currentStep]="currentStep"></app-gold-detail> -->
-                  <app-gold-detail></app-gold-detail>
+                  <!-- <app-gold-detail></app-gold-detail> -->
+                   <app-receipt></app-receipt>
                 } @else if (tab === 'SILVER') {
                   <app-customer-detail></app-customer-detail>
                 }

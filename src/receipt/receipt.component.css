@@ -1,0 +1,42 @@
+/* <div id="receipt" class="container">
+  <h2>Payment Receipt</h2>
+  <p><strong>Date:</strong> {{ date | date:'mediumDate' }}</p>
+  <p><strong>Receipt No:</strong> {{ receiptNumber }}</p>
+
+  <hr />
+
+  <h3>Customer Details</h3>
+  <p><strong>Name:</strong> {{ customer.name }}</p>
+  <p><strong>Email:</strong> {{ customer.email }}</p>
+
+  <hr />
+
+  <h3>Items</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Qty</th>
+        <th>Price</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of items; track item.name) {
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>{{ item.qty }}</td>
+          <td>{{ item.price | currency:'INR' }}</td>
+          <td>{{ item.qty * item.price | currency:'INR' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <hr />
+
+  <p><strong>Total:</strong> {{ total }}</p>
+
+  <button (click)="downloadPDF()">Download PDF</button>
+  <button (click)="printReceipt()">Print</button>
+</div> */
