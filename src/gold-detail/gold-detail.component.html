@@ -15,6 +15,17 @@
                                 }
                             }
                         </div>
+                        <div class="col-sm-6 col-md-3 my-2">
+                            <input type="number" class="form-control" id="makingCharge" formControlName="makingCharge" placeholder="Making charges" (change)="calculatePrice()"/>
+                            @if (goldPurchaseForm.get('makingCharge')?.invalid && (goldPurchaseForm.get('makingCharge')?.touched || goldPurchaseForm.get('makingCharge')?.dirty)) {
+                                @if (goldPurchaseForm.get('makingCharge')?.errors?.['required']) {
+                                    <small class="validationError">*Please enter making charges</small>
+                                }
+                                @if (goldPurchaseForm.get('makingCharge')?.errors?.['min'] || goldPurchaseForm.get('makingCharge')?.errors?.['max']) {
+                                    <small class="validationError">*Making charges should be 5% to 20%</small>
+                                }
+                            }
+                        </div>
                     </div>
                     <mat-divider></mat-divider>
                     <div formArrayName="items">
@@ -52,7 +63,7 @@
                                         }
                                     </div>
                                     <div class="col-sm-6 col-md-3 my-2">
-                                        <input type="text" class="form-control" id="weight" formControlName="price" placeholder="{{item.get('price')?.value}}"/>
+                                        <input type="text" class="form-control" id="price" [value]="item.get('price')?.value | currency:'INR'" readonly/>
                                     </div>
                                 </div>
                             </div>
@@ -64,24 +75,30 @@
                     </div>
                         <div class="row">
                             <mat-radio-group formControlName="payment" aria-label="Select payment mode">
-                                <label>Payment mode: </label>
-                                <mat-radio-button value="online">Cheque/Card/UPI</mat-radio-button>
+                                <label>Payment: </label>
                                 <mat-radio-button value="cash">Cash</mat-radio-button>
+                                <mat-radio-button value="online">Cheque/Card/UPI</mat-radio-button>
                             </mat-radio-group>
                             <div class="row">
                                 <div class="col-sm-6 col-md-3 my-2">
+                                    <label for="URD">Less URD</label>
                                     <input type="number" class="form-control" id="urd" formControlName="URD" placeholder="Lesss URD"/>
                                 </div>
                                 <div class="col-sm-6 col-md-3 my-2">
-                                    <input type="number" class="form-control" id="discount" formControlName="Discount" placeholder="Discount"/>
+                                    <label for="discount">Discount</label>
+                                    <input type="number" class="form-control" id="discount" formControlName="discount" placeholder="Discount"/>
                                 </div>
-                                <div>
-                                    <label for="finalPrice">Total Price: {{totalPrice}}</label>
-                                </div>
+                                
                             </div>
                         </div>
-                        <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary mt-3 px-3" [disabled]="!goldPurchaseForm.valid">Generate Receipt</button>
+                        <div class="row mt-3">                            
+                            <div class="col-md-6 d-flex justify-content-start align-items-center">
+                                <h5>Total Price: {{totalPrice |currency:'INR'}}</h5>
+                                <input type="hidden" class="form-control" id="finalPrice" formControlName="finalPrice" placeholder="finalPrice"/>
+                            </div>
+                            <div class="col-md-6 d-flex justify-content-end align-items-center">
+                                <button type="submit" class="btn btn-primary mt-3 px-3" [disabled]="!goldPurchaseForm.valid">Generate Receipt</button>
+                            </div>
                         </div>
                 </form>
             </div>

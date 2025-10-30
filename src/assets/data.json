@@ -1,0 +1,15 @@
+{
+    "goldRate": 9090,
+    "makingCharge": 9,
+    "items": [
+        {
+            "itemPurchase": "Gold Chain",
+            "HUID": "ASD123",
+            "weight": 12.45
+        }
+    ],
+    "URD": 0,
+    "discount": 0,
+    "payment": "cash",
+    "finalPrice": 123355.85
+}

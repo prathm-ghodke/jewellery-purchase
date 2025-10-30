@@ -1,61 +1,49 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe, CurrencyPipe } from '@angular/common';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-
-interface ReceiptItem {
-  name: string;
-  qty: number;
-  price: number;
-}
-
-interface Customer {
-  name: string;
-  email: string;
-}
+import { HttpClient } from '@angular/common/http';
+import { ReceiptData } from './receipt.interface';
 
 @Component({
   selector: 'app-receipt',
   imports: [CommonModule, DatePipe, CurrencyPipe],
   templateUrl: './receipt.component.html',
-  styleUrl: './receipt.component.css'
+  styleUrls: ['./receipt.component.css']
 })
-export class ReceiptComponent {
+export class ReceiptComponent implements OnInit {
 
-    date = new Date();
-  receiptNumber = `RCP-${Math.floor(Math.random() * 100000)}`;
-  
-  customer: Customer = {
-    name: 'John Doe',
-    email: 'john@example.com'
+  formdata: ReceiptData = {
+    items: [],
+    goldRate: 0,
+    makingCharge: 0,
+    URD: 0,
+    discount: 0,
+    finalPrice: 0,
+    paymenrtMode: ''
   };
+  cgst: number = 0;
+  sgst: number = 0;
+  totalAmount: number = 0;
+  
+  constructor(private http: HttpClient) { }
 
-  items: ReceiptItem[] = [
-    { name: 'Product A', qty: 2, price: 120 },
-    { name: 'Product B', qty: 1, price: 250 },
-  ];
-
-  get total(): number {
-    return this.items.reduce((sum, item) => sum + item.qty * item.price, 0);
+  ngOnInit(): void {
+    this.http.get<ReceiptData>('assets/data.json').subscribe(data => {
+      this.formdata = data;
+      this.calculateTaxes();
+      console.log('Receipt Data:', this.formdata);
+    });
   }
 
-  async downloadPDF(): Promise<void> {
-    const element = document.getElementById('receipt');
-    console.log('Downloading PDF...', element);
-    if (!element) return;
-
-    const canvas = await html2canvas(element, { scale: 2 });
-    const imgData = canvas.toDataURL('image/png');
-
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`${this.receiptNumber}.pdf`);
+  private calculateTaxes(): void {
+    this.cgst = Number((this.formdata.finalPrice * 0.015).toFixed(2));
+    this.sgst = Number((this.formdata.finalPrice * 0.015).toFixed(2));
+    this.totalAmount = Number((this.formdata.finalPrice + this.cgst + this.sgst).toFixed(2));
   }
 
-  printReceipt(): void {
-    window.print();
+  getTotalPrice(): number {
+    this.totalAmount = this.formdata.finalPrice + this.cgst + this.sgst;
+    return this.totalAmount;
   }
 }
